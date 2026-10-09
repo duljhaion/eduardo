@@ -1,0 +1,1 @@
+O projeto tem como objetivo facilitar a organização das ocorrências escolares. Os professores poderão registrar problemas de comportamento dos alunos, enquanto a direção poderá analisar os casos e aplicar advertências ou suspensões. Os alunos terão acesso aos próprios registros. O sistema busca melhorar a comunicação, a disciplina e a segurança na escola.
