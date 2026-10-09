@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ocorrências Escolares</title>
+<style>
+body{font-family:Arial;background:#eef2f7;margin:0;padding:20px;color:#222}
+main{max-width:650px;margin:25px auto;background:white;padding:24px;border-radius:14px;box-shadow:0 3px 15px #ccd}
+h1{text-align:center;color:#174a8b}
+input,select,textarea,button{width:100%;padding:12px;margin:7px 0;box-sizing:border-box;border:1px solid #ccc;border-radius:7px}
+button{background:#174a8b;color:white;border:0;cursor:pointer}
+.item{background:#f1f5fb;padding:12px;margin:10px 0;border-radius:8px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<main>
+<h1>Ocorrências Escolares</h1>
+<p>Entre para acessar o sistema da escola.</p>
+
+<label>Seu nome</label>
+<input id="nome" placeholder="Digite seu nome">
+
+<label>Tipo de acesso</label>
+<select id="tipo">
+<option value="aluno">Aluno</option>
+<option value="professor">Professor</option>
+<option value="diretor">Diretor</option>
+</select>
+
+<button onclick="entrar()">Entrar</button>
+<p id="aviso"></p>
+
+<section id="painel" class="hidden">
+<h2 id="titulo"></h2>
+
+<div id="cadastro" class="hidden">
+<h3>Registrar ocorrência ou suspensão</h3>
+<input id="estudante" placeholder="Nome do aluno">
+<input id="sala" placeholder="Turma ou sala">
+<select id="categoria">
+<option>Ocorrência</option>
+<option>Suspensão</option>
+</select>
+<textarea id="motivo" placeholder="Descreva o motivo"></textarea>
+<input id="dias" type="number" min="0" placeholder="Dias de suspensão (se houver)">
+<button onclick="registrar()">Salvar registro</button>
+</div>
+
+<h3>Registros</h3>
+<div id="lista"></div>
+<button onclick="sair()">Sair</button>
+</section>
+</main>
+
+<script>
+let registros = [];
+let usuario = "";
+let perfil = "";
+
+function entrar(){
+ usuario = document.getElementById("nome").value.trim();
+ perfil = document.getElementById("tipo").value;
+ if(!usuario){
+  document.getElementById("aviso").textContent="Digite seu nome.";
+  return;
+ }
+ document.getElementById("aviso").textContent="";
+ document.getElementById("painel").classList.remove("hidden");
+ document.getElementById("titulo").textContent="Olá, "+usuario+"!";
+ document.getElementById("cadastro").classList.toggle("hidden",perfil==="aluno");
+ mostrar();
+}
+function registrar(){
+ let aluno=document.getElementById("estudante").value.trim();
+ let sala=document.getElementById("sala").value.trim();
+ let categoria=document.getElementById("categoria").value;
+ let motivo=document.getElementById("motivo").value.trim();
+ let dias=Number(document.getElementById("dias").value)||0;
+ if(!aluno||!sala||!motivo){
+  alert("Preencha nome, sala e motivo.");
+  return;
+ }
+ registros.push({aluno,sala,categoria,motivo,dias,autor:usuario});
+ mostrar();
+ document.getElementById("estudante").value="";
+ document.getElementById("sala").value="";
+ document.getElementById("motivo").value="";
+ document.getElementById("dias").value="";
+}
+function mostrar(){
+ let lista=document.getElementById("lista");
+ lista.innerHTML="";
+ let visiveis=perfil==="aluno"?registros.filter(r=>r.aluno.toLowerCase()===usuario.toLowerCase()):registros;
+ if(visiveis.length===0) lista.textContent="Nenhum registro encontrado.";
+ visiveis.forEach(r=>{
+  let div=document.createElement("div");
+  div.className="item";
+  let texto=document.createElement("p");
+  texto.textContent="Aluno: "+r.aluno+" | Sala: "+r.sala+" | "+r.categoria;
+  let detalhe=document.createElement("p");
+  detalhe.textContent="Motivo: "+r.motivo+" | Dias de suspensão: "+r.dias;
+  div.append(texto,detalhe);
+  lista.appendChild(div);
+ });
+}
+function sair(){
+ document.getElementById("painel").classList.add("hidden");
+ document.getElementById("nome").value="";
+}
+</script>
+</body>
+</html>
